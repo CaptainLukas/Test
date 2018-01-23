@@ -18,9 +18,16 @@ namespace Textanalyse.Web.Controllers
             _log = log;
         }
 
+        [HttpGet("/")]
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet("/search")]
+        public void Search()
+        {
+            _log.LogInformation("Es wurde eine Suche getartet");
         }
 
         public IActionResult Error()
