@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Seq.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Textanalyse.Web
 {
@@ -22,6 +24,11 @@ namespace Textanalyse.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddSeq();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
