@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Seq.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace Textanalyse.Web
 {
@@ -24,7 +27,8 @@ namespace Textanalyse.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddLocalization();
+            services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
 
             services.AddLogging(loggingBuilder =>
             {
@@ -33,18 +37,24 @@ namespace Textanalyse.Web
 
             /*services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders();*/
 
             services.AddAuthentication().AddGoogle(googleOptions =>
             {
-                googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
-                googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-            });*/
+                googleOptions.ClientId = Configuration["85712095585-jnisev9b5hk7fih76qoh1r1napoin1q4.apps.googleusercontent.com"];
+                googleOptions.ClientSecret = Configuration["X6P13CVaNhHYp_PuCNS4wZJV"];
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var cultures = new[] { new CultureInfo ("en"), new CultureInfo ("de") };
+
+            var localisationOptions = new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("en"), SupportedCultures = cultures, SupportedUICultures = cultures };
+
+            app.UseRequestLocalization(localisationOptions);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

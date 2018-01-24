@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Textanalyse.Web.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Localization;
 
 namespace Textanalyse.Web.Controllers
 {
@@ -13,9 +14,12 @@ namespace Textanalyse.Web.Controllers
     {
         readonly ILogger<HomeController> _log;
 
-        public HomeController(ILogger<HomeController> log)
+        readonly IStringLocalizer<HomeController> localizer;
+
+        public HomeController(ILogger<HomeController> log, IStringLocalizer<HomeController> localizer)
         {
             _log = log;
+            this.localizer = localizer;
         }
 
         [HttpGet("/")]
