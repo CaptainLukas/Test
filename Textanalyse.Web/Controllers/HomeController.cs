@@ -10,6 +10,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Textanalyse.Web.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         readonly ILogger<HomeController> _log;

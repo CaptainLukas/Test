@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Textanalyse.Web.Models;
+using TextAnalyse.Data;
 
 namespace Textanalyse.Web
 {
@@ -35,9 +37,9 @@ namespace Textanalyse.Web
                 loggingBuilder.AddSeq();
             });
 
-            /*services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();*/
+                .AddDefaultTokenProviders();
 
             services.AddAuthentication().AddGoogle(googleOptions =>
             {
