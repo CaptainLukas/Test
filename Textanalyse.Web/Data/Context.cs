@@ -18,7 +18,7 @@ namespace Textanalyse.Web
 
         public void EnsureSeeded()
         {
-
+        
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Textanalyse.Web.Models
+namespace Textanalyse.Web.Data
 {
     public class ApplicationUser : IdentityUser
     {

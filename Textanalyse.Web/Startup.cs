@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Textanalyse.Web.Models;
 using TextAnalyse.Data;
 using Microsoft.EntityFrameworkCore;
+using Textanalyse.Web.Data;
 
 namespace Textanalyse.Web
 {

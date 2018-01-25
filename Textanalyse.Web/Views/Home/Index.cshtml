@@ -4,7 +4,15 @@
 @{
     ViewData["Title"] = "TextAnalyse";
 }
+<div class="col-md-6 col-md-offset-2">
 
+    @{var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+    <form method="post" action="/account/externalLogin">
+        
+        <button type="submit" name=" provider" value="@loginProviders[0].Name">blablaBlup</button>
+    </form>
+        }
+</div>
 <div class="g-signin2" data-onsuccess="OnSignIn"></div>
 <!--<script>
     function onSignIn(googleUser) {
