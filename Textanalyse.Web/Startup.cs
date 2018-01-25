@@ -14,6 +14,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Textanalyse.Web.Models;
 using TextAnalyse.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Textanalyse.Web
 {
@@ -31,6 +32,11 @@ namespace Textanalyse.Web
         {
             services.AddLocalization();
             services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
+            var builder = new DbContextOptionsBuilder<Context>().UseSqlite("Data Source=sqlite.db");
+            var context = new Context(builder.Options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            context.EnsureSeeded();
 
             services.AddLogging(loggingBuilder =>
             {
