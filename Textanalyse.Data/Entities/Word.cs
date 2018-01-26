@@ -7,11 +7,16 @@ namespace Textanalyse.Web.Entities
 {
     public class Word
     {
-        private int WordID;
-
-        public int CalculateLevithen(string word)
+        public  int WordID
         {
-            return 0;
+            get;
+            set;
+        }
+
+        public string Value
+        {
+            get;
+            set;
         }
     }
 }

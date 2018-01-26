@@ -7,11 +7,11 @@
   <ItemGroup>
     <PackageReference Include="Google.Apis.Auth" Version="1.32.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
-    <PackageReference Include="Microsoft.Owin.Host.SystemWeb" Version="4.0.0-preview1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
     <PackageReference Include="Seq.Extensions.Logging" Version="4.0.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.106" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,13 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Views\Home\Index.de.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
+    <ProjectReference Include="..\Textanalyse.Data\Textanalyse.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <EmbeddedResource Update="Views\Home\Index.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

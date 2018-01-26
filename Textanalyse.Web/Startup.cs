@@ -12,9 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using TextAnalyse.Data;
 using Microsoft.EntityFrameworkCore;
-using Textanalyse.Web.Data;
+using Textanalyse.Data.Data;
 
 namespace Textanalyse.Web
 {
@@ -30,13 +29,10 @@ namespace Textanalyse.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ITextContext>(provider => provider.GetService<TextContext>());
+            services.AddDbContext<TextContext>(options => options.UseSqlite("Data Source=sqlite.db", x => x.MigrationsAssembly("Textanalyse.Web")));
             services.AddLocalization();
             services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
-            var builder = new DbContextOptionsBuilder<Context>().UseSqlite("Data Source=sqlite.db");
-            var context = new Context(builder.Options);
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-            context.EnsureSeeded();
 
             services.AddLogging(loggingBuilder =>
             {
@@ -44,7 +40,7 @@ namespace Textanalyse.Web
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<TextContext>()
                 .AddDefaultTokenProviders();
 
             services.AddAuthentication().AddGoogle(googleOptions =>
@@ -55,8 +51,9 @@ namespace Textanalyse.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ITextContext context)
         {
+            context.Migrate();
             var cultures = new[] { new CultureInfo ("en"), new CultureInfo ("de") };
 
             var localisationOptions = new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("en"), SupportedCultures = cultures, SupportedUICultures = cultures };

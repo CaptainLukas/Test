@@ -7,12 +7,16 @@ namespace Textanalyse.Web.Entities
 {
     public class Text
     {
-        private int TextID;
+        public int TextID
+        {
+            get;
+            set;
+        }
 
-        private List<Sentence> sentences;
-
-        private Sentence beforeSentence;
-
-        private Sentence nextSentence;
+        public List<Sentence> Sentences
+        {
+            get;
+            set;
+        }
     }
 }
