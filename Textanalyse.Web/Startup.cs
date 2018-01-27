@@ -14,6 +14,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Textanalyse.Data.Data;
+using Hangfire;
+using Hangfire.SQLite;
 
 namespace Textanalyse.Web
 {
@@ -33,6 +35,7 @@ namespace Textanalyse.Web
             services.AddDbContext<TextContext>(options => options.UseSqlite("Data Source=sqlite.db", x => x.MigrationsAssembly("Textanalyse.Web")));
             services.AddLocalization();
             services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
+            services.AddHangfire(x => x.UseSqlServerStorage("C:\\Users\\acer\\Source\\Repos\\TextAnalyse\\Textanalyse.Web"));
 
             services.AddLogging(loggingBuilder =>
             {
@@ -60,8 +63,6 @@ namespace Textanalyse.Web
 
             app.UseRequestLocalization(localisationOptions);
 
-            
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -74,6 +75,15 @@ namespace Textanalyse.Web
 
             app.UseStaticFiles();
 
+            // Hangfire configuration
+            var options = new SQLiteStorageOptions();
+            GlobalConfiguration.Configuration.UseSQLiteStorage("Data Source = E:\\OneDrive\\SourceCodes\\Study\\ASPNetHangfireSQLite\\ASPNetHangfireSQLite\\App_Data\\Hangfire.sqlite", options);
+            var option = new BackgroundJobServerOptions { WorkerCount = 1 };
+            app.UseHangfireServer(option);
+            app.UseHangfireDashboard();
+            // Add scheduled jobs
+            RecurringJob.AddOrUpdate(() => Run(), Cron.Minutely);
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -82,6 +92,10 @@ namespace Textanalyse.Web
             });
 
             app.UseAuthentication();
+        }
+        public void Run()
+        {
+            Debug.WriteLine($"Run at {DateTime.Now}");
         }
     }
 }
