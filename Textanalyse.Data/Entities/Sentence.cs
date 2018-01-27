@@ -13,13 +13,13 @@ namespace Textanalyse.Web.Entities
             set;
         }
 
-        public Sentence BeforeSentence
+        public int BeforeSentenceID
         {
             get;
             set;
         }
 
-        public Sentence NextSentence
+        public int NextSentenceID
         {
             get;
             set;

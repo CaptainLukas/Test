@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using Textanalyse.Data.Data;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IViewLocalizer Localizer
+
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>LoggedIn</title>
+</head>
+<body>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h4>Login with Google!</h4>
+
+            @{
+                var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                <form method="post" action="/account/logout">
+                    <button type="submit" name="provider" value="@loginProviders[0].Name">Login</button>
+                </form>
+            }
+
+        </section>
+    </div>
+
+</body>
+</html>

@@ -45,8 +45,8 @@ namespace Textanalyse.Web
 
             services.AddAuthentication().AddGoogle(googleOptions =>
             {
-                googleOptions.ClientId = Configuration["85712095585-jnisev9b5hk7fih76qoh1r1napoin1q4.apps.googleusercontent.com"];
-                googleOptions.ClientSecret = Configuration["X6P13CVaNhHYp_PuCNS4wZJV"];
+                googleOptions.ClientId = Configuration["id"];
+                googleOptions.ClientSecret = Configuration["secret"];
             });
         }
 
@@ -59,6 +59,8 @@ namespace Textanalyse.Web
             var localisationOptions = new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("en"), SupportedCultures = cultures, SupportedUICultures = cultures };
 
             app.UseRequestLocalization(localisationOptions);
+
+            
 
             if (env.IsDevelopment())
             {
@@ -78,6 +80,8 @@ namespace Textanalyse.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseAuthentication();
         }
     }
 }
