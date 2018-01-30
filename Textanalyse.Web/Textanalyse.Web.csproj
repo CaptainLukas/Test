@@ -30,6 +30,9 @@
     <EmbeddedResource Update="Views\Home\Index.de.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\Home\LoggedIn.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

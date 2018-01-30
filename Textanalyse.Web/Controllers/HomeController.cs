@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Textanalyse.Web.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Localization;
+using Textanalyse.Data.Repository;
 
 namespace Textanalyse.Web.Controllers
 {
@@ -17,15 +18,23 @@ namespace Textanalyse.Web.Controllers
 
         readonly IStringLocalizer<HomeController> localizer;
 
-        public HomeController(ILogger<HomeController> log, IStringLocalizer<HomeController> localizer)
+        readonly IRepository<HomeController> repository;
+
+        public HomeController(ILogger<HomeController> log, IStringLocalizer<HomeController> localizer, IRepository<HomeController> repository)
         {
             _log = log;
             this.localizer = localizer;
+            this.repository = repository;
         }
 
         [HttpGet("/")]
         public IActionResult Index()
         {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                return View("LoggedIn");
+            }
+
             return View();
         }
 
@@ -33,6 +42,13 @@ namespace Textanalyse.Web.Controllers
         public IActionResult Search()
         {
             _log.LogInformation("Es wurde eine Suche gestartet");
+            return View();
+        }
+
+        [HttpPost("/textSave")]
+        public IActionResult TextSave(string text)
+        {
+            this.repository.SaveText(text);
             return View();
         }
 

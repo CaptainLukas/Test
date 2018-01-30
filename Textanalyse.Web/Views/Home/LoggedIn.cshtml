@@ -11,22 +11,26 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>LoggedIn</title>
+    <title>@Localizer["Logged In!"]</title>
 </head>
 <body>
     <div class="col-md-6 col-md-offset-2">
         <section>
-            <h4>Login with Google!</h4>
+            <h4>@Localizer["Logged in with Google!"]</h4>
 
             @{
                 var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 <form method="post" action="/account/logout">
-                    <button type="submit" name="provider" value="@loginProviders[0].Name">Login</button>
+                    <button type="submit" name="provider" value="@loginProviders[0].Name">@Localizer["Log Out"]</button>
                 </form>
             }
 
         </section>
     </div>
 
+    <form method="post" action="/textSave">
+        <input type="text" name="TextBox"id="TextBox"/>
+        <submit name="SaveButton" id="SaveButton" >@Localizer["Save"]</submit>
+    </form>
 </body>
 </html>

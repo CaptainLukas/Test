@@ -11,12 +11,12 @@
 
 <div class="col-md-6 col-md-offset-2">
     <section>
-        <h4>Login with Google!</h4>
+        <h4>@Localizer["Login with Google!"]</h4>
 
         @{
             var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             <form method="post" action="/account/externalLogin">
-                <button type="submit" name="provider" value="@loginProviders[0].Name">Login</button>
+                <button type="submit" name="provider" value="@loginProviders[0].Name">@Localizer["Login"]</button>
             </form>
         }
 
@@ -25,9 +25,9 @@
 
 <form method ="get" id="DivSearch" name="DivSearch">
     <h2>@Localizer["This is a test"]</h2>
-    <h1>@Localizer["TextAnalys"]</h1>
+    <h1>@Localizer["TextAnalyse"]</h1>
     <div><input type="text" id="Suchbegriff" name="Suchbegriff"/></div>
-    <div><input type="submit" id="ButtonInput" name="ButtonInput" value="Start Search"/></div>
+    <div><input type="submit" id="ButtonInput" name="ButtonInput" value="@Localizer["Start Search"]"/></div>
 </form>
 
 <environment include="Development">

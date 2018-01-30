@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Textanalyse.Data.Data;
 using Hangfire;
 using Hangfire.SQLite;
+using System.Diagnostics;
 
 namespace Textanalyse.Web
 {
@@ -57,6 +58,9 @@ namespace Textanalyse.Web
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ITextContext context)
         {
             context.Migrate();
+
+            app.UseAuthentication();
+
             var cultures = new[] { new CultureInfo ("en"), new CultureInfo ("de") };
 
             var localisationOptions = new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("en"), SupportedCultures = cultures, SupportedUICultures = cultures };
@@ -75,14 +79,14 @@ namespace Textanalyse.Web
 
             app.UseStaticFiles();
 
-            // Hangfire configuration
+            /*/ Hangfire configuration
             var options = new SQLiteStorageOptions();
             GlobalConfiguration.Configuration.UseSQLiteStorage("Data Source = E:\\OneDrive\\SourceCodes\\Study\\ASPNetHangfireSQLite\\ASPNetHangfireSQLite\\App_Data\\Hangfire.sqlite", options);
             var option = new BackgroundJobServerOptions { WorkerCount = 1 };
             app.UseHangfireServer(option);
             app.UseHangfireDashboard();
             // Add scheduled jobs
-            RecurringJob.AddOrUpdate(() => Run(), Cron.Minutely);
+            RecurringJob.AddOrUpdate(() => Run(), Cron.Minutely);*/
 
             app.UseMvc(routes =>
             {
@@ -90,8 +94,6 @@ namespace Textanalyse.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            app.UseAuthentication();
         }
         public void Run()
         {
