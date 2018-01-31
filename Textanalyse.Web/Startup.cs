@@ -54,8 +54,8 @@ namespace Textanalyse.Web
 
             services.AddAuthentication().AddGoogle(googleOptions =>
             {
-                googleOptions.ClientId = Configuration["id"];
-                googleOptions.ClientSecret = Configuration["secret"];
+                googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
+                googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
             });
         }
 
