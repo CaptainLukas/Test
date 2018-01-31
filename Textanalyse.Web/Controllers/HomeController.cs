@@ -18,9 +18,9 @@ namespace Textanalyse.Web.Controllers
 
         readonly IStringLocalizer<HomeController> localizer;
 
-        readonly IRepository<HomeController> repository;
+        readonly IRepository repository;
 
-        public HomeController(ILogger<HomeController> log, IStringLocalizer<HomeController> localizer, IRepository<HomeController> repository)
+        public HomeController(ILogger<HomeController> log, IStringLocalizer<HomeController> localizer, IRepository repository)
         {
             _log = log;
             this.localizer = localizer;

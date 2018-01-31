@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Textanalyse.Data.Data;
+using System.Collections;
 
 namespace Textanalyse.Data.Repository
 {
-    class Repository<T>
+    public class Repository : IRepository
     {
         private TextContext context;
 
@@ -13,7 +15,6 @@ namespace Textanalyse.Data.Repository
         {
             this.context = context;
         }
-
         public void SaveText(string text)
         {
 

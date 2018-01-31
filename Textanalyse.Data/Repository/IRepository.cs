@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Textanalyse.Data.Repository
 {
-    public interface IRepository<T>
+    public interface IRepository
     {
         void SaveText(string text);
     }

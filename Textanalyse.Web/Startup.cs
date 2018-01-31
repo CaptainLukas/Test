@@ -17,6 +17,9 @@ using Textanalyse.Data.Data;
 using Hangfire;
 using Hangfire.SQLite;
 using System.Diagnostics;
+using Textanalyse.Data.Repository;
+using Microsoft.AspNetCore.Mvc;
+using Textanalyse.Web.Controllers;
 
 namespace Textanalyse.Web
 {
@@ -33,10 +36,12 @@ namespace Textanalyse.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ITextContext>(provider => provider.GetService<TextContext>());
+            services.AddTransient<IRepository, Repository>();
             services.AddDbContext<TextContext>(options => options.UseSqlite("Data Source=sqlite.db", x => x.MigrationsAssembly("Textanalyse.Web")));
             services.AddLocalization();
             services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
-            services.AddHangfire(x => x.UseSqlServerStorage("C:\\Users\\acer\\Source\\Repos\\TextAnalyse\\Textanalyse.Web"));
+            
+            //services.AddHangfire(x => x.UseSqlServerStorage("C:\\Users\\acer\\Source\\Repos\\TextAnalyse\\Textanalyse.Web"));
 
             services.AddLogging(loggingBuilder =>
             {
