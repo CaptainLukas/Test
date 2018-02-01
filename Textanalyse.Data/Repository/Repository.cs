@@ -33,7 +33,19 @@ namespace Textanalyse.Data.Repository
 
             result.SentenceID = sentence.SentenceID;
 
-            
+            //Check den Vor Satz
+            Sentence vorsatz = new Sentence();
+            //Check den NachSatz
+            Sentence nachsatz = new Sentence();
+
+            //Vorsatz Score
+            NebensatzCheck(vorsatz.Words, Suchbegriffe);
+
+            //Nachsatz Score
+            NebensatzCheck(nachsatz.Words, Suchbegriffe);
+
+            //Hauptsatz Score
+            Hauptsatzcheck(sentence.Words, Suchbegriffe);
 
             return result;
         }
@@ -118,6 +130,13 @@ namespace Textanalyse.Data.Repository
             public int score { get; set; }
 
             public string  summary { get; set; }
+        }
+
+        private class WordResult
+        {
+            public int score { get; set; }
+
+            public string summary { get; set; }
         }
     }
 }
