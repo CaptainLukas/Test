@@ -17,7 +17,7 @@ namespace Textanalyse.Data.Data
 
         public void Migrate()
         {
-
+            this.Database.Migrate();
         }
     }
 }

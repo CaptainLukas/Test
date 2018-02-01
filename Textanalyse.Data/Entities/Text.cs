@@ -13,6 +13,12 @@ namespace Textanalyse.Web.Entities
             set;
         }
 
+        public string Owner
+        {
+            get;
+            set;
+        }
+
         public List<Sentence> Sentences
         {
             get;
