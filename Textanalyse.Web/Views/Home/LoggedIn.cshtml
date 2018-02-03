@@ -29,13 +29,13 @@
     </div>
 
     <form method="post" action="/textSave">
-        <input type="text" name="TextBox"id="TextBox"/>
-        <submit name="SaveButton" id="SaveButton" >@Localizer["Save"]</submit>
+        <input type="text" name="text" id="text"/>
+        <button type="submit" name="SaveButton" id="SaveButton" >@Localizer["Save"]</button>
     </form>
 
     <form method="post" action="/search">
         <input type="text" name="SuchText" id="SuchText"/>
-        <submit name="SuchButton" id="SuchButton">@Localizer["Search"]</submit>
+        <button typeof="submit" name="SuchButton" id="SuchButton">@Localizer["Search"]</button>
     </form>
     <form></form>
 </body>

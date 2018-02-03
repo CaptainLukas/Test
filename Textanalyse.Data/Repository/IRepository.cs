@@ -6,6 +6,6 @@ namespace Textanalyse.Data.Repository
 {
     public interface IRepository
     {
-        void SaveText(string text);
+        void SaveText(string text, string owner);
     }
 }

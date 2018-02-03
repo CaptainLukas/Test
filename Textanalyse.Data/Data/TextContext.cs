@@ -15,6 +15,11 @@ namespace Textanalyse.Data.Data
 
         public TextContext(DbContextOptions<TextContext> options) : base(options) { }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
+
         public void Migrate()
         {
             this.Database.Migrate();

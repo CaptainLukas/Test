@@ -18,6 +18,12 @@ namespace Textanalyse.Web.Entities
             set;
         }
 
+        public int SentenceID
+        {
+            get;
+            set;
+        }
+
         public string Value
         {
             get;

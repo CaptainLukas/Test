@@ -12,13 +12,23 @@ namespace Textanalyse.Data.Repository
     {
         private TextContext context;
 
+        private DbManager manager;
+
         public Repository(TextContext context)
         {
             this.context = context;
+            this.manager = new DbManager(context);
         }
-        public void SaveText(string text)
+        public void SaveText(string text, string owner)
         {
-
+            try
+            {
+                this.manager.AddText(text, owner);
+            }
+            catch (Exception)
+            {
+                //this._log.LogError("Adding a new text caused an error.");
+            }
         }
 
         public List<TextResult> SearchResult(string suche)

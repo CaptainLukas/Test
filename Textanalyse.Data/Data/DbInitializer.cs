@@ -15,8 +15,8 @@ namespace Textanalyse.Data.Data
 
         public DbInitializer(TextContext textContext)
         {
-            manager = new DbManager(textContext);
             context = textContext;
+            manager = new DbManager(textContext);
         }
 
         public void Seed(TextContext context)
@@ -31,48 +31,12 @@ namespace Textanalyse.Data.Data
                 return;   // DB has been seeded
             }
 
-            Word[] wordsCool = { new Word("Hallo"), new Word("ich"), new Word("bin"), new Word("ein"), new Word("cooler"), new Word("Typ") };
-            Word[] wordsTest = { new Word("Das"), new Word("ist"), new Word("en"), new Word("coole"), new Word("Test"), new Word("Satz") };
-            Word[] wordsProgrammieren = { new Word("Programmieren"), new Word("ist"), new Word("mein"), new Word("liebstes"), new Word("Fach"), new Word("ever") };
-            Word[] wordsTesto = { new Word("Ich"), new Word("mach"), new Word("hier"), new Word("einen"), new Word("coolen"), new Word("Testo") };
-            Word[] wordsHUE = { new Word("Ih"), new Word("mache"), new Word("so"), new Word("liebsten"), new Word("meine"), new Word("Fache") };
+            manager.AddText("Hallo ich hab einen Test Satz. Das ist der Text zum testen meines Programmes. Bitte suche nach Test. Tes. Ich hab viel spaß.", "Lukas");
 
-            Sentence sentenceCool = new Sentence();
-            Sentence sentenceTest = new Sentence();
-            Sentence sentenceProgrammieren = new Sentence();
-            Sentence sentenceTesto = new Sentence();
-            Sentence sentenceHUE = new Sentence();
+            manager.AddText("Ich habe diesen Text selbst geschrieben. Es ist ein Test für die Suche, ein Tet. Ich brauch noch ein paar Sätze. Vielleicht sollte ic Schriftsteller werden.","Lukas");
 
-            for (int i = 0; i < wordsCool.Length; i++)
-            {
-                sentenceCool.Words.Add(wordsCool[i]);
-                sentenceTest.Words.Add(wordsTest[i]);
-                sentenceProgrammieren.Words.Add(wordsProgrammieren[i]);
-                sentenceTesto.Words.Add(wordsTesto[i]);
-                sentenceHUE.Words.Add(wordsHUE[i]);
-            }
+            manager.AddText("Die Windmühle ist ein technisches Bauwerk, das mittels seiner vom Wind in Drehung versetzten Flügel Arbeit verrichtet. Am verbreitetsten war die Nutzung als Mühle, wodurch die Bezeichnung auf alle derartigen Anlagen übertragen wurde. Windmühlen waren, neben den an Standorten mit nutzbarer Wasserkraft anzutreffenden Wassermühlen, bis zur Erfindung der Motoren die einzigen frühen Kraftmaschinen nach der Muskelkraftmaschine in der Menschheitsgeschichte.Entsprechend vielfältig war ihre Verwendung als Mahlmühle, als Ölmühle, zur Verarbeitung von Werkstoffen.","Lukas");
 
-            context.Text.AddRange(
-                new Text
-                {
-                    Sentences = new List<Sentence>() { sentenceCool, sentenceProgrammieren , sentenceTesto, sentenceCool },
-                },
-
-                new Text
-                {
-                    Sentences = new List<Sentence>() { sentenceCool, sentenceTest , sentenceHUE, sentenceHUE },
-                },
-
-                 new Text
-                 {
-                     Sentences = new List<Sentence>() { sentenceProgrammieren , sentenceTest, sentenceTesto , sentenceTest },
-                 },
-
-                 new Text
-                 {
-                     Sentences = new List<Sentence>() { sentenceHUE, sentenceTesto, sentenceProgrammieren, sentenceTesto },
-                 }
-            );
             context.SaveChanges();
         }
     }

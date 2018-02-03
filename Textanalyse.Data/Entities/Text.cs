@@ -7,6 +7,11 @@ namespace Textanalyse.Web.Entities
 {
     public class Text
     {
+        public Text()
+        {
+            this.Sentences = new List<Sentence>();
+        }
+
         public int TextID
         {
             get;

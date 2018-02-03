@@ -94,6 +94,7 @@ namespace Textanalyse.Web.Controllers
             var info = await this._signInManager.GetExternalLoginInfoAsync();
 
             // Sign in the user with this external login provider if the user already has a login.
+
             var result = await this._signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {

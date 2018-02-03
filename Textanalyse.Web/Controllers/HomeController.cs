@@ -8,6 +8,7 @@ using Textanalyse.Web.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Localization;
 using Textanalyse.Data.Repository;
+using Textanalyse.Data.Data;
 
 namespace Textanalyse.Web.Controllers
 {
@@ -20,11 +21,17 @@ namespace Textanalyse.Web.Controllers
 
         readonly IRepository repository;
 
-        public HomeController(ILogger<HomeController> log, IStringLocalizer<HomeController> localizer, IRepository repository)
+        readonly TextContext context;
+
+        readonly DbManager dbManager;
+
+        public HomeController(ILogger<HomeController> log, IStringLocalizer<HomeController> localizer, IRepository repository, TextContext context)
         {
             _log = log;
+            this.context = context;
             this.localizer = localizer;
             this.repository = repository;
+            this.dbManager = new DbManager(context);
         }
 
         [HttpGet("/")]
@@ -48,8 +55,13 @@ namespace Textanalyse.Web.Controllers
         [HttpPost("/textSave")]
         public IActionResult TextSave(string text)
         {
-            this.repository.SaveText(text);
-            return View();
+            if(!this.User.Identity.IsAuthenticated)
+            {
+                return View("~/Views/Shared/Error.cshtml");
+            }
+
+            this.repository.SaveText(text, this.User.Identity.Name);
+            return View("LoggedIn");
         }
 
         public IActionResult Error()
