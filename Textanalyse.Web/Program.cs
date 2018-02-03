@@ -24,7 +24,8 @@ namespace Textanalyse.Web
                 try
                 {
                     var context = services.GetRequiredService<TextContext>();
-                    DbInitializer.Seed(context);
+                    DbInitializer initializer = new DbInitializer(context);
+                    initializer.Seed(context);
                 }
                 catch(Exception e)
                 {
