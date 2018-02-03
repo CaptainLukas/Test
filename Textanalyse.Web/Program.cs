@@ -18,7 +18,7 @@ namespace Textanalyse.Web
         {
             var host = BuildWebHost(args);
 
-            using (var scope = host.Services.CreateScope())false//Azure Täuschungs kommentar
+            using (var scope = host.Services.CreateScope())//Azure täuschungs Kommentaar
             {
                 var services = scope.ServiceProvider;
                 try
