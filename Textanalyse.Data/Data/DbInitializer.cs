@@ -7,9 +7,19 @@ using Textanalyse.Web.Entities;
 
 namespace Textanalyse.Data.Data
 {
-    public static class DbInitializer
+    public class DbInitializer
     {
-        public static void Seed(TextContext context)
+        private TextContext context;
+
+        private DbManager manager;
+
+        public DbInitializer(TextContext textContext)
+        {
+            manager = new DbManager(textContext);
+            context = textContext;
+        }
+
+        public void Seed(TextContext context)
         {
             //using (var context = new TextContext(
             //    applicationBuilder.GetRequiredService<DbContextOptions<TextContext>>()))
@@ -64,21 +74,6 @@ namespace Textanalyse.Data.Data
                  }
             );
             context.SaveChanges();
-            //}
-        }
-
-        private static Dictionary<string, Text> _texts;
-        public static Dictionary<string, Text> Texts
-        {
-            get
-            {
-                if (_texts == null)
-                {
-                    // Add categories...
-                }
-
-                return _texts;
-            }
         }
     }
 }

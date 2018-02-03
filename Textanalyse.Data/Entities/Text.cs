@@ -19,6 +19,12 @@ namespace Textanalyse.Web.Entities
             set;
         }
 
+        public string OriginalText
+        {
+            get;
+            set;
+        }
+
         public List<Sentence> Sentences
         {
             get;

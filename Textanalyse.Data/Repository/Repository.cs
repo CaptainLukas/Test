@@ -21,52 +21,197 @@ namespace Textanalyse.Data.Repository
 
         }
 
-        public void AnalyseText(Text text, string[] Suchbegriffe)
+        public List<TextResult> SearchResult(string suche)
         {
+            string[] suchbegriffe = suche.Split(' ');
 
-        }
+            if (suchbegriffe.Length > 3)
+            { return null; }
 
+            List<TextResult> result = new List<TextResult>();
 
-        private SentenceResult Satzcheck(Sentence sentence, string[] Suchbegriffe)
-        {
-            SentenceResult result = new SentenceResult();
+            List<Text> textListe = new List<Text>();///Texte checken
 
-            result.SentenceID = sentence.SentenceID;
+            for(int i = 0; i < textListe.Count; i++)
+            {
+                result.Add(AnalyseText(textListe[i], suchbegriffe));
+            }
 
-            //Check den Vor Satz
-            Sentence vorsatz = new Sentence();
-            //Check den NachSatz
-            Sentence nachsatz = new Sentence();
+            while(result.Count > 5)
+            {
+                int min = 0;
 
-            //Vorsatz Score
-            NebensatzCheck(vorsatz.Words, Suchbegriffe);
+                for (int i = 0; i < result.Count; i++)
+                {
+                    if (result[i].Score < result[min].Score)
+                    {
+                        min = i;
+                    }
+                }
 
-            //Nachsatz Score
-            NebensatzCheck(nachsatz.Words, Suchbegriffe);
-
-            //Hauptsatz Score
-            Hauptsatzcheck(sentence.Words, Suchbegriffe);
+                result.RemoveAt(min);
+            }
 
             return result;
         }
 
-        private int NebensatzCheck(List<Word> words, string[] Suchbegriffe)
+        private TextResult AnalyseText(Text text, string[] suchbegriffe)
         {
-            int score = 0;
+            List<SentenceResult> results = new List<SentenceResult>();
 
-            return score;/////////////////////////////////////
-        }
+            TextResult textResult = new TextResult();
+            textResult.TextID = text.TextID;
 
-        private int Hauptsatzcheck(List<Word> words, string[] Suchbegriffe)
-        {
-            int score = 0;
-
-            for (int i = 0; i < Suchbegriffe.Length; i++)
+            for (int i = 0; i < text.Sentences.Count; i ++)
             {
+                results.Add(Satzcheck(text.Sentences[i], suchbegriffe));
 
+                textResult.Score += results[i].Score;
             }
 
-            return score;////////////////////////////////////////////
+            for (int j = 0; j < results.Count; j++)
+            {
+                if (textResult.Sentences.Count < 3)
+                {
+                    textResult.Sentences.Add(results[j]);
+                }
+                else
+                {
+                    int min = 0;
+
+                    for (int k = 0; k < textResult.Sentences.Count; k++)
+                    {
+                        if (textResult.Sentences[k].Score < textResult.Sentences[min].Score)
+                        {
+                            min = k;
+                        }
+                    }
+
+                    if (textResult.Sentences[min].Score < results[j].Score)
+                    {
+                            textResult.Sentences.RemoveAt(min);
+                            textResult.Sentences.Add(results[j]);
+                    }
+                }
+            }
+
+            return textResult;
+        }
+
+
+        private SentenceResult Satzcheck(Sentence sentence, string[] suchbegriffe)
+        {
+            SentenceResult result = new SentenceResult();
+
+            result.SentenceID = sentence.SentenceID;
+            //Check den Vor Satz/////////////////////////////////////////////////
+            Sentence vorsatz = new Sentence();
+            //Check den NachSatz////////////////////////////////////////////////
+            Sentence nachsatz = new Sentence();
+
+            for (int i = 0; i < suchbegriffe.Length; i++)
+            {
+                SearchTerm searchterm = new SearchTerm(suchbegriffe[i]);
+                //Vorsatz Score
+                HauptSatzCheck(vorsatz.Words, searchterm, SatzTyp.Previoussentence);
+
+                //Nachsatz Score
+                HauptSatzCheck(nachsatz.Words, searchterm, SatzTyp.Nextsentence);
+
+                //Hauptsatz Score
+                HauptSatzCheck(sentence.Words, searchterm, SatzTyp.Mainsentence);
+
+                result.Score = searchterm.MainSentence * 3 + searchterm.NextSentence * 2 + searchterm.PreviousSentence * 2;
+
+                result.Summary.Add(result.Score.ToString() + " Points: Term " + searchterm.OriginalTerm + " found " + searchterm.MainSentence.ToString() + "x in main sentence, " + searchterm.PreviousSentence.ToString() + "x in previous sentence and " + searchterm.NextSentence.ToString() + "x in next sentence");
+
+                for (int j = 0; j < searchterm.SimilarTerms.Count; j++)
+                {
+                    int tempscore = 0;
+
+                    tempscore = searchterm.SimilarTerms[j].MainSentence * 2 + searchterm.SimilarTerms[j].NextSentence * 1 + searchterm.SimilarTerms[j].PreviousSentence * 1;
+
+                    result.Summary.Add(tempscore.ToString() + " Points: Similar Term for " + searchterm.OriginalTerm + " [" + searchterm.SimilarTerms[j].Term + "] found " + searchterm.SimilarTerms[j].MainSentence.ToString() + "x in main sentence, " + searchterm.SimilarTerms[j].PreviousSentence.ToString() + "x in previous sentence and " + searchterm.SimilarTerms[j].NextSentence.ToString() + "x in next sentence");
+
+                    result.Score += tempscore;
+                }
+            }
+
+            return result;
+        }
+        
+        private void HauptSatzCheck(List<Word> words, SearchTerm searchterm, SatzTyp typ)
+        {
+            for (int i = 0; i < words.Count; i++)
+            {
+                //wenn selbes Wort im Satz
+                if (searchterm.OriginalTerm == words[i].Value)
+                {
+                    switch(typ)
+                    {
+                        case SatzTyp.Mainsentence:
+                            searchterm.MainSentence++;
+                            break;
+                        case SatzTyp.Nextsentence:
+                            searchterm.NextSentence++;
+                            break;
+                        case SatzTyp.Previoussentence:
+                            searchterm.PreviousSentence++;
+                            break;
+                    }
+                }
+                else
+                {
+                    //Wenn ähnliches Wort im Satz ist
+                    if (LevenshteinDistance(searchterm.OriginalTerm, words[i].Value) == 1)
+                    {
+                        bool IsFound = false;
+
+                        // checken obs schon mal vorgekommen ist
+                        for (int j = 0; j < searchterm.SimilarTerms.Count; j++)
+                        {
+                            if (searchterm.SimilarTerms[j].Term == words[i].Value)
+                            {
+                                switch (typ)
+                                {
+                                    case SatzTyp.Mainsentence:
+                                        searchterm.SimilarTerms[j].MainSentence++;
+                                        break;
+                                    case SatzTyp.Nextsentence:
+                                        searchterm.SimilarTerms[j].NextSentence++;
+                                        break;
+                                    case SatzTyp.Previoussentence:
+                                        searchterm.SimilarTerms[j].PreviousSentence++;
+                                        break;
+                                }
+
+                                IsFound = true;
+                            }
+                        }
+
+                        // wenn nicht vorgekommen, zu vorgekommen liste
+                        if (!IsFound)
+                        {
+                            SimilarTerm newTerm = new SimilarTerm(words[i].Value);
+
+                            searchterm.SimilarTerms.Add(newTerm);
+
+                            switch (typ)
+                            {
+                                case SatzTyp.Mainsentence:
+                                    newTerm.MainSentence++;
+                                    break;
+                                case SatzTyp.Nextsentence:
+                                    newTerm.NextSentence++;
+                                    break;
+                                case SatzTyp.Previoussentence:
+                                    newTerm.PreviousSentence++;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private int LevenshteinDistance(string wordOne, string wordTwo)
@@ -121,22 +266,52 @@ namespace Textanalyse.Data.Repository
             return d[d.GetUpperBound(0), d.GetUpperBound(1)];
 
         }
-
-
-        private class SentenceResult
+        
+        private class SearchTerm
         {
-            public int SentenceID { get; set; }
+            public SearchTerm(string searchterm)
+            {
+                this.OriginalTerm = searchterm;
+                this.MainSentence = 0;
+                this.PreviousSentence = 0;
+                this.NextSentence = 0;
+                this.SimilarTerms = new List<SimilarTerm>();
+            }
 
-            public int score { get; set; }
+            public string OriginalTerm { get; private set; }
 
-            public string  summary { get; set; }
+            public int MainSentence { get; set; }
+
+            public int PreviousSentence { get; set; }
+
+            public int NextSentence { get; set; }
+
+            public List<SimilarTerm> SimilarTerms {get; set;}
         }
 
-        private class WordResult
+        private class SimilarTerm
         {
-            public int score { get; set; }
+            public SimilarTerm( string term )
+            {
+                this.MainSentence = 0;
+                this.NextSentence = 0;
+                this.PreviousSentence = 0;
+            }
 
-            public string summary { get; set; }
+            public string Term { get; private set; }
+
+            public int MainSentence { get; set; }
+
+            public int PreviousSentence { get; set; }
+
+            public int NextSentence { get; set; }
+        }
+
+        public enum SatzTyp
+        {
+            Mainsentence,
+            Previoussentence,
+            Nextsentence,
         }
     }
 }
