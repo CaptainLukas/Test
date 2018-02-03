@@ -130,6 +130,6 @@
     <value>TextAnalyse</value>
   </data>
   <data name="This is a test" xml:space="preserve">
-    <value>Das ist ein Test</value>
+    <value>Es funktioniert</value>
   </data>
 </root>
