@@ -223,7 +223,7 @@ namespace Textanalyse.Data.Repository
 
             for (int i = 0; i < text.Sentences.Count; i ++)
             {
-                results.Add(Satzcheck(text.Sentences[i], suchbegriffe, texts, text.TextID));
+                results.Add(Satzcheck(text.Sentences[i], suchbegriffe, texts, text.TextID-1));
 
                 textResult.Score += results[i].Score;
             }
@@ -268,7 +268,7 @@ namespace Textanalyse.Data.Repository
             Text text = null;
             try
             {
-                text = textList.Find(x => x.TextID == textID);
+                text = textList.Find(x => x.TextID == textID + 1);
             }
             catch (Exception e)
             {
@@ -276,18 +276,18 @@ namespace Textanalyse.Data.Repository
             }
 
 
-            if (sentence.BeforeSentenceID != -1 && sentence.BeforeSentenceID < text.Sentences.Count)
+            if (sentence.BeforeSentenceID != -1)// && sentence.BeforeSentenceID < text.Sentences.Count)
             {
-                 vorsatz = text.Sentences[sentence.BeforeSentenceID];
+                 vorsatz = text.Sentences[sentence.BeforeSentenceID - text.Sentences[0].SentenceID];
             }
             else
             {
                 vorsatz = new Sentence();
             }
             
-            if (sentence.NextSentenceID != -1 && sentence.NextSentenceID < text.Sentences.Count)
+            if (sentence.NextSentenceID != -1)// && sentence.NextSentenceID < text.Sentences.Count)
             {
-                nachsatz = text.Sentences[sentence.NextSentenceID];
+                nachsatz = text.Sentences[sentence.NextSentenceID - text.Sentences[0].SentenceID];
             }
             else
             {
@@ -478,6 +478,7 @@ namespace Textanalyse.Data.Repository
         {
             public SimilarTerm( string term )
             {
+                this.Term = term;
                 this.MainSentence = 0;
                 this.NextSentence = 0;
                 this.PreviousSentence = 0;

@@ -76,7 +76,7 @@ namespace Textanalyse.Web.Controllers
                 JArray section = new JArray();
                 JObject text = new JObject();
                 text.Add("textid", JToken.FromObject(searchResult[i].TextID));
-                text.Add("scoreTotel", JToken.FromObject(searchResult[i].Score));
+                text.Add("scoreTotal", JToken.FromObject(searchResult[i].Score));
                 text.Add("sections", section);
 
                 for (int j = 0; j < searchResult[i].Sentences.Count; j++)
