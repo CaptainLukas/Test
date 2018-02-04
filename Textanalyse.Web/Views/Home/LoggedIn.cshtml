@@ -37,18 +37,18 @@
         <button type="submit" name="SummaryButton" id="SummaryButton">@Localizer["Summary"]</button>
     </form>
 
-    <form method="get" id="searchForm" >
-            <div>
-                <input type="text" id="searchText" />
-                <input type="submit" id="searchButton" value=@Localizer["Search"] />
-            </div>
+    <form method="get" id="searchForm" action="/search">
+        <div>
+            <input type="text" id="searchText" name="searchterm" />
+            <input type="submit" id="searchButton" value=@Localizer["Search"] />
+        </div>
     </form>
 
-    <p id="searchMsgBox" style="display:none;"></p>
-    <textarea id="jsonBox" style="display:none;"></textarea>
+    @if (TempData["result"] != null)
+    {
+        <p>@TempData["result"]</p>
+    }
 
-
-    <script src="~/js/index.js"></script>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <environment include="Development">
         <script src="https://apis.google.com/js/plattform.js" async defer></script>

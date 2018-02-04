@@ -265,19 +265,29 @@ namespace Textanalyse.Data.Repository
             result.SentenceID = sentence.SentenceID;
 
             Sentence vorsatz, nachsatz;
-
-            if (sentence.BeforeSentenceID != -1)
+            Text text = null;
+            try
             {
-                 vorsatz = textList[textID].Sentences[sentence.BeforeSentenceID];
+                text = textList.Find(x => x.TextID == textID);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+
+            if (sentence.BeforeSentenceID != -1 && sentence.BeforeSentenceID < text.Sentences.Count)
+            {
+                 vorsatz = text.Sentences[sentence.BeforeSentenceID];
             }
             else
             {
                 vorsatz = new Sentence();
             }
             
-            if (sentence.NextSentenceID != -1)
+            if (sentence.NextSentenceID != -1 && sentence.NextSentenceID < text.Sentences.Count)
             {
-                nachsatz = textList[textID].Sentences[sentence.NextSentenceID];
+                nachsatz = text.Sentences[sentence.NextSentenceID];
             }
             else
             {

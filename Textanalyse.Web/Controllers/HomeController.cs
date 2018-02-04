@@ -90,17 +90,17 @@ namespace Textanalyse.Web.Controllers
 
                 results.Add(text);
             }
-            
-            TempData["searchMessage"] = "Hallo Freunde";
-
-            ObjectResult result = new ObjectResult(new
-            {
-                message = TempData["searchMessage"],
-                json = jsonobject.ToString()
-            });
-            
+            TempData["result"] = jsonobject.ToString();
             _log.LogInformation("Search started.");
-            return result;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                return View("~/Views/Home/LoggedIn.cshtml");
+            }
+            else
+            {
+                return View("~/Views/Home/Index.cshtml");
+            }
         }
 
         [HttpPost("/textSave")]
