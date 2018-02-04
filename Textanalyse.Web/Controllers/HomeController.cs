@@ -21,7 +21,7 @@ namespace Textanalyse.Web.Controllers
         readonly ILogger<HomeController> _log;
 
         readonly IStringLocalizer<HomeController> localizer;
-
+         
         readonly IRepository repository;
 
         readonly TextContext context;
