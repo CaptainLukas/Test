@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Textanalyse.Web.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Initiali : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -11,8 +11,8 @@ using Textanalyse.Data.Data;
 namespace Textanalyse.Web.Migrations
 {
     [DbContext(typeof(TextContext))]
-    [Migration("20180204060748_Initial")]
-    partial class Initial
+    [Migration("20180204151414_Initiali")]
+    partial class Initiali
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

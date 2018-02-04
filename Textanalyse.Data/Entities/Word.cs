@@ -7,6 +7,11 @@ namespace Textanalyse.Web.Entities
 {
     public class Word
     {
+        public Word()
+        {
+            Value = "";
+        }
+
         public Word(string word)
         {
             this.Value = word;

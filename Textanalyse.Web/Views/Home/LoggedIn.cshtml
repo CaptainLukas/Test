@@ -12,12 +12,6 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@Localizer["Logged In!"]</title>
-    <script src="~/js/index.js"></script>
-    <environment include="Development">
-        <script src="https://apis.google.com/js/plattform.js" async defer></script>
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
 </head>
 <body>
     <div class="col-md-6 col-md-offset-2">
@@ -53,5 +47,12 @@
     <p id="searchMsgBox" style="display:none;"></p>
     <textarea id="jsonBox" style="display:none;"></textarea>
 
+
+    <script src="~/js/index.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <environment include="Development">
+        <script src="https://apis.google.com/js/plattform.js" async defer></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
 </body>
 </html>
