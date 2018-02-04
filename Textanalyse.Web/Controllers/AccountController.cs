@@ -40,8 +40,7 @@ namespace Textanalyse.Web.Controllers
                 {
                     this._log.LogError($"Could not retreive informations");
                 }
-
-                // User must have a user name -> else error!
+                
                 string userName = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
                 
                 if (string.IsNullOrWhiteSpace(userName))

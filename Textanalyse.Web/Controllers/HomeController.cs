@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Localization;
 using Textanalyse.Data.Repository;
 using Textanalyse.Data.Data;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace Textanalyse.Web.Controllers
 {
@@ -46,10 +48,58 @@ namespace Textanalyse.Web.Controllers
         }
 
         [HttpGet("/search")]
-        public IActionResult Search()
+        public IActionResult Search(string searchterm)
         {
-            _log.LogInformation("Es wurde eine Suche gestartet");
-            return View();
+            if (string.IsNullOrWhiteSpace(searchterm))
+            {
+                return View();
+            }
+
+            string[] searchterms = searchterm.Split(' ');
+
+            if (searchterms.Length > 3)
+            {
+                return View();
+            }
+
+            List<TextResult> searchResult = repository.SearchResult(searchterm);
+
+            JArray results = new JArray();
+
+            JObject jsonobject = new JObject();
+
+            jsonobject.Add("results", results);
+
+            for (int i = 0; i < searchResult.Count; i++)
+            {
+                JArray section = new JArray();
+                JObject text = new JObject();
+                text.Add("textid", JToken.FromObject(searchResult[i].TextID));
+                text.Add("scoreTotel", JToken.FromObject(searchResult[i].Score));
+                text.Add("sections", section);
+
+                for (int j = 0; j < searchResult[i].Sentences.Count; j++)
+                {
+                    JObject sentence = new JObject();
+                    sentence.Add("sentenceID", JToken.FromObject(searchResult[i].Sentences[j].SentenceID));
+                    sentence.Add("score", JToken.FromObject(searchResult[i].Sentences[j].Score));
+                    sentence.Add("scoreSummary", JToken.FromObject(searchResult[i].Sentences[j].Summary.ToArray()));
+                    section.Add(sentence);
+                }
+
+                results.Add(text);
+            }
+            
+            TempData["searchMessage"] = "Hallo Freunde";
+
+            ObjectResult result = new ObjectResult(new
+            {
+                message = TempData["searchMessage"],
+                json = jsonobject.ToString()
+            });
+            
+            _log.LogInformation("Search started.");
+            return result;
         }
 
         [HttpPost("/textSave")]
@@ -66,7 +116,8 @@ namespace Textanalyse.Web.Controllers
 
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            this._log.LogError("An Error occured.");
+            return View("~/Views/Error/Error.cshtml");
         }
     }
 }

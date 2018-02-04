@@ -23,14 +23,20 @@
     </section>
 </div>
 
-<form method ="get" id="DivSearch" name="DivSearch">
-    <h2>@Localizer["This is a test"]</h2>
-    <h1>@Localizer["TextAnalyse"]</h1>
-    <div><input type="text" id="Suchbegriff" name="Suchbegriff"/></div>
-    <div><input type="submit" id="ButtonInput" name="ButtonInput" value="@Localizer["Start Search"]"/></div>
+<form method="get" id="searchForm" >
+        <div>
+            <input type="text" id="searchText" />
+            <input type="submit" id="searchButton" value=@Localizer["Search"] />
+        </div>
 </form>
 
+<p id="searchMsgBox" style="display:none;"></p>
+<textarea id="jsonBox" style="display:none;"></textarea>
+
+<script src="~/js/index.js"></script>
+
 <environment include="Development">
+    
     <script src="https://apis.google.com/js/plattform.js" async defer></script>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

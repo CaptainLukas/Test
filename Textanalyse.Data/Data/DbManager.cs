@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Textanalyse.Web.Entities;
@@ -9,9 +10,12 @@ namespace Textanalyse.Data.Data
     {
         public TextContext context;
 
+        private readonly ILogger log;
+
         public DbManager(TextContext textContext)
         {
             context = textContext;
+            this.log = new Logger<DbManager>(new LoggerFactory());
         }
 
         public void AddText(string newText, string owner)
@@ -44,7 +48,8 @@ namespace Textanalyse.Data.Data
             }
             catch(Exception e)
             {
-                //log exception
+                log.LogError("Error while Adding Text.", e.Message);
+                return;
             }
 
             foreach(Sentence sentence in text.Sentences)
@@ -54,7 +59,7 @@ namespace Textanalyse.Data.Data
 
             for (int i = 0; i < newSentences.Length; i++)
             {
-                if (text.Sentences[i].SentenceID <= 1)
+                if (i == 0)
                 {
                     text.Sentences[i].BeforeSentenceID = -1;
                 }
@@ -93,7 +98,7 @@ namespace Textanalyse.Data.Data
             }
             catch (Exception e)
             {
-                //log exception
+                log.LogError("Error while Adding Text.", e.Message);
             }
         }
     }

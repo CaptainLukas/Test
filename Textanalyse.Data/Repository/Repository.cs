@@ -7,6 +7,7 @@ using System.Collections;
 using Textanalyse.Web.Entities;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Textanalyse.Data.Repository
 {
@@ -16,20 +17,24 @@ namespace Textanalyse.Data.Repository
 
         private DbManager manager;
 
-        public Repository(TextContext context)
+        private readonly ILogger log;
+
+        public Repository(TextContext context, ILogger<Repository> log)
         {
             this.context = context;
             this.manager = new DbManager(context);
+            this.log = log;
         }
         public void SaveText(string text, string owner)
         {
             try
             {
                 this.manager.AddText(text, owner);
+                log.LogInformation("New text added.", text);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //this._log.LogError("Adding a new text caused an error.");
+                log.LogError("Saving the new text failed.", e);
             }
         }
 
@@ -39,10 +44,11 @@ namespace Textanalyse.Data.Repository
             {
                 context.Text.Remove(context.Text.Where(x => x.TextID == id).ToList()[0]);
                 context.SaveChanges();
+                log.LogInformation("Text removed.");
             }
             catch(Exception e)
             {
-                //log
+                log.LogError("Removing text failed.", e);
             }
         }
 
@@ -61,7 +67,7 @@ namespace Textanalyse.Data.Repository
 
             foreach (string sentence in sentences)
             {
-                new_Text.Sentences.Add(new Sentence);
+                new_Text.Sentences.Add(new Sentence());
             }
             
             try
@@ -71,7 +77,7 @@ namespace Textanalyse.Data.Repository
             }
             catch (Exception e)
             {
-                //log
+                log.LogError("Editing the text failed.", e);
                 return;
             }
 
@@ -127,7 +133,7 @@ namespace Textanalyse.Data.Repository
             }
             catch (Exception e)
             {
-                //log
+                log.LogError("Editing the text failed.", e);
                 return;
             }
         }
@@ -167,11 +173,11 @@ namespace Textanalyse.Data.Repository
 
             List<TextResult> result = new List<TextResult>();
 
-            List<Text> textListe = new List<Text>();///Texte checken
+            List<Text> textList = this.context.Text.Include(t => t.Sentences).ThenInclude(s => s.Words).ToList();
 
-            for(int i = 0; i < textListe.Count; i++)
+            for (int i = 0; i < textList.Count; i++)
             {
-                result.Add(AnalyseText(textListe[i], suchbegriffe));
+                result.Add(AnalyseText(textList[i], suchbegriffe, textList));
             }
 
             while(result.Count > 5)
@@ -192,7 +198,7 @@ namespace Textanalyse.Data.Repository
             return result;
         }
 
-        private TextResult AnalyseText(Text text, string[] suchbegriffe)
+        private TextResult AnalyseText(Text text, string[] suchbegriffe, List<Text> texts)
         {
             List<SentenceResult> results = new List<SentenceResult>();
 
@@ -201,7 +207,7 @@ namespace Textanalyse.Data.Repository
 
             for (int i = 0; i < text.Sentences.Count; i ++)
             {
-                results.Add(Satzcheck(text.Sentences[i], suchbegriffe));
+                results.Add(Satzcheck(text.Sentences[i], suchbegriffe, texts, text.TextID));
 
                 textResult.Score += results[i].Score;
             }
@@ -236,15 +242,31 @@ namespace Textanalyse.Data.Repository
         }
 
 
-        private SentenceResult Satzcheck(Sentence sentence, string[] suchbegriffe)
+        private SentenceResult Satzcheck(Sentence sentence, string[] suchbegriffe, List<Text> textList, int textID)
         {
             SentenceResult result = new SentenceResult();
 
             result.SentenceID = sentence.SentenceID;
-            //Check den Vor Satz/////////////////////////////////////////////////
-            Sentence vorsatz = new Sentence();
-            //Check den NachSatz////////////////////////////////////////////////
-            Sentence nachsatz = new Sentence();
+
+            Sentence vorsatz, nachsatz;
+
+            if (sentence.BeforeSentenceID != -1)
+            {
+                 vorsatz = textList[textID].Sentences[sentence.BeforeSentenceID];
+            }
+            else
+            {
+                vorsatz = new Sentence();
+            }
+            
+            if (sentence.NextSentenceID != -1)
+            {
+                nachsatz = textList[textID].Sentences[sentence.NextSentenceID];
+            }
+            else
+            {
+                nachsatz = new Sentence();
+            }
 
             for (int i = 0; i < suchbegriffe.Length; i++)
             {
