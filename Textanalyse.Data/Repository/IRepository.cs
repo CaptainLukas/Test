@@ -17,6 +17,8 @@ namespace Textanalyse.Data.Repository
 
         void RemoveTextByID(int id);
 
+        List<Text> GetTexts();
+
         List<TextResult> SearchResult(string suche);
     }
 }

@@ -1,0 +1,33 @@
+﻿form {
+    margin-top: 50px;
+}
+
+.form-control {
+    display: inline;
+}
+
+.submit, .btn, .btn-primary {
+    width: 120px;
+}
+
+.inputText {
+    width: 300px;
+}
+
+.googleAuth {
+    margin: 0px;
+    width: 100px;
+    height: auto;
+}
+
+.googleAuthBtn {
+    width: 100%;
+    margin: 0px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+td {
+    text-align: center;
+    vertical-align: middle;
+}

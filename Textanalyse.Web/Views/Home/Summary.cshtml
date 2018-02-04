@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using Textanalyse.Data.Data;
+@using Textanalyse.Web.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = @Localizer["Summary"];
+}
+
+<table class="table">
+    <thread>
+        <tr>
+            <th style="text-align:center;vertical-align:middle" scope="col">TextID</th>
+            <th style="text-align:center;vertical-align:middle" scope="col">Text</th>
+            <th style="text-align:center;vertical-align:middle" scope="col">Sentences</th>
+            <th style="text-align:center;vertical-align:middle" scope="col">Words</th>
+        </tr>
+    </thread>
+    <tbody>
+        @if (TempData["texts"] != null)
+        {
+            List<Text> texts = (List<Text>)TempData["texts"];
+
+            for(int i = 0; i < texts.Count; i++)
+            {
+                int id = i + 1;
+                int words = 0;
+                string text = string.Empty;
+                try
+                {
+                    words = texts[i].Sentences.Sum(x => x.Words.Count + words);
+                }
+                catch (Exception)
+                {
+                }
+
+                <tr>
+                    <th style="text-align:center;vertical-align:middle" scope="row">@id</th>
+                    <td style="text-align:center;vertical-align:middle">@texts[i].TextID</td>
+                    <td style="text-align:center;vertical-align:middle">@texts[i].Sentences.Count</td>
+                    <td style="text-align:center;vertical-align:middle">@words</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<form method="get" action="/">
+    <div>
+        <button type="submit" >@Localizer["Back"]</button>
+    </div>
+</form>
+<link rel="stylesheet" href="~/css/summary.css" type="text/css" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" type="text/css" />
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/index.js" asp-append-version="true"></script>

@@ -142,7 +142,7 @@ namespace Textanalyse.Data.Repository
         {
             try
             {
-                return context.Text.Where(x => x.Owner == owner).Include(x => x.Sentences).ThenInclude(x => x.Words).ToList();
+                return context.Text.Where(x => x.Owner == owner).Include(y => y.Sentences).ThenInclude(z => z.Words).ToList();
             }
             catch(Exception e)
             {
@@ -155,11 +155,27 @@ namespace Textanalyse.Data.Repository
         {
             try
             {
-                return context.Text.Where(x => x.TextID == id).Include(x => x.Sentences).ThenInclude(x => x.Words).ToList()[0];
+                return context.Text.Where(x => x.TextID == id).Include(y => y.Sentences).ThenInclude(z => z.Words).ToList()[0];
             }
             catch (Exception e)
             {
                 //log
+                return null;
+            }
+        }
+
+        public List<Text> GetTexts()
+        {
+            try
+            {
+                List<Text> text = context.Text
+                    .Include(x => x.Sentences)
+                    .ThenInclude(y => y.Words)
+                    .ToList();
+                return text;
+            }
+            catch (Exception e)
+            {
                 return null;
             }
         }
@@ -173,7 +189,7 @@ namespace Textanalyse.Data.Repository
 
             List<TextResult> result = new List<TextResult>();
 
-            List<Text> textList = this.context.Text.Include(t => t.Sentences).ThenInclude(s => s.Words).ToList();
+            List<Text> textList = this.context.Text.Include(x => x.Sentences).ThenInclude(y => y.Words).ToList();
 
             for (int i = 0; i < textList.Count; i++)
             {

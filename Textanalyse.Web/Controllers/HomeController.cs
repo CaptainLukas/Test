@@ -11,6 +11,7 @@ using Textanalyse.Data.Repository;
 using Textanalyse.Data.Data;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Http;
+using Textanalyse.Web.Entities;
 
 namespace Textanalyse.Web.Controllers
 {
@@ -41,7 +42,7 @@ namespace Textanalyse.Web.Controllers
         {
             if (this.User.Identity.IsAuthenticated)
             {
-                return View("LoggedIn");
+                return View("~/Views/Home/LoggedIn.cshtml");
             }
 
             return View();
@@ -112,6 +113,21 @@ namespace Textanalyse.Web.Controllers
 
             this.repository.SaveText(text, this.User.Identity.Name);
             return View("LoggedIn");
+        }
+
+        [HttpPost("/summary")]
+        public IActionResult Summary()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                List<Text> texts = repository.GetTexts();
+                this.TempData["texts"] = texts;
+                return View("~/Views/Home/Summary.cshtml");
+            }
+            else
+            {
+                return View("~/Views/Home/Index.cshtml");
+            }
         }
 
         public IActionResult Error()
