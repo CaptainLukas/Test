@@ -90,6 +90,7 @@ namespace Textanalyse.Web.Controllers
 
                 results.Add(text);
             }
+
             TempData["result"] = jsonobject.ToString();
             _log.LogInformation("Search started.");
 
