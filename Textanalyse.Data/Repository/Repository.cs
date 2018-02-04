@@ -5,6 +5,8 @@ using System.Text;
 using Textanalyse.Data.Data;
 using System.Collections;
 using Textanalyse.Web.Entities;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Textanalyse.Data.Repository
 {
@@ -28,6 +30,131 @@ namespace Textanalyse.Data.Repository
             catch (Exception)
             {
                 //this._log.LogError("Adding a new text caused an error.");
+            }
+        }
+
+        public void RemoveTextByID(int id)
+        {
+            try
+            {
+                context.Text.Remove(context.Text.Where(x => x.TextID == id).ToList()[0]);
+                context.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                //log
+            }
+        }
+
+        public void EditText(Text text, string newText)
+        {
+            if (string.IsNullOrWhiteSpace(newText))
+            {
+                return;
+            }
+
+            Text new_Text = new Text();
+            new_Text.OriginalText = newText;
+            new_Text.Owner = text.Owner;
+
+            string[] sentences = newText.Split(new string[] { ".", "!", "?" }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string sentence in sentences)
+            {
+                new_Text.Sentences.Add(new Sentence);
+            }
+            
+            try
+            {
+                context.Add(new_Text);
+                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                //log
+                return;
+            }
+
+            for (int i = 0; i < sentences.Length; i++)
+            {
+                if (text.Sentences[i].SentenceID <= 1)
+                {
+                    text.Sentences[i].BeforeSentenceID = -1;
+                }
+                else
+                {
+                    text.Sentences[i].BeforeSentenceID = text.Sentences[i].SentenceID - 1;
+                }
+
+                if (sentences.Length - 1 == i)
+                {
+                    text.Sentences[i].NextSentenceID = -1;
+                }
+                else
+                {
+                    text.Sentences[i].NextSentenceID = text.Sentences[i].SentenceID + 1;
+                }
+
+                string[] newWords = sentences[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                for (int j = 0; j < newWords.Length; j++)
+                {
+                    string newWord = newWords[j].Replace(",", string.Empty);
+                    newWord = newWords[j].Replace("(", string.Empty);
+                    newWord = newWords[j].Replace(")", string.Empty);
+                    newWord = newWords[j].Replace(";", string.Empty);
+                    newWord = newWords[j].Replace("-", string.Empty);
+                    Word word = new Word(newWord);
+                    word.SentenceID = text.Sentences[i].SentenceID;
+                    text.Sentences[i].Words.Add(word);
+                }
+            }
+
+            text.Sentences = new_Text.Sentences;
+            text.OriginalText = new_Text.OriginalText;
+
+            for (int i = 0; i < new_Text.Sentences.Count; i++)
+            {
+                text.Sentences[i].TextID = text.TextID;
+            }
+            new_Text.Sentences = null;
+            new_Text.OriginalText = null;
+            
+            try
+            {
+                context.Remove(new_Text);
+                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                //log
+                return;
+            }
+        }
+
+        public List<Text> GetTextByOwner(string owner)
+        {
+            try
+            {
+                return context.Text.Where(x => x.Owner == owner).Include(x => x.Sentences).ThenInclude(x => x.Words).ToList();
+            }
+            catch(Exception e)
+            {
+                //log
+                return null;
+            }
+        }
+
+        public Text GetTextByID(int id)
+        {
+            try
+            {
+                return context.Text.Where(x => x.TextID == id).Include(x => x.Sentences).ThenInclude(x => x.Words).ToList()[0];
+            }
+            catch (Exception e)
+            {
+                //log
+                return null;
             }
         }
 

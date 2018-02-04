@@ -43,6 +43,13 @@ namespace Textanalyse.Web.Controllers
 
                 // User must have a user name -> else error!
                 string userName = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+                
+                if (string.IsNullOrWhiteSpace(userName))
+                {
+                    Random rand = new Random();
+                    userName = rand.Next(10000000).ToString() + rand.Next(1000000).ToString();
+                }
+
                 string userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
                 ApplicationUser user = new ApplicationUser
                 {

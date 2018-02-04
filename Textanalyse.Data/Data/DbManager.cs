@@ -36,8 +36,16 @@ namespace Textanalyse.Data.Data
             {
                 text.Sentences.Add(new Sentence());
             }
-            context.Add(text);
-            context.SaveChanges();
+
+            try
+            {
+                context.Add(text);
+                context.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                //log exception
+            }
 
             foreach(Sentence sentence in text.Sentences)
             {
@@ -79,19 +87,14 @@ namespace Textanalyse.Data.Data
                 }
             }
 
-            context.SaveChanges();
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                //log exception
+            }
         }
-
-        public void DeleteText()
-        {
-
-        }
-
-        public void EditText()
-        {
-
-        }
-
-        
     }
 }
